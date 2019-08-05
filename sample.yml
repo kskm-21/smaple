@@ -1,0 +1,26 @@
+--- #This playbook installs IIM v1.8.2 and WASND v8.5.5.0
+- hosts: '{{ hostname }}'
+  gather_facts: no
+  vars:
+    svc_user: svctnaix
+    package: java
+  become: yes
+  become_user: '{{ svc_user }}'
+  become_method: su
+  tasks:
+  - name: check file systems for app
+    shell: "df -h | grep /opt/app |wc -l"
+    register: opt_app
+  - debug: msg="we have it"
+    when: opt_app.stdout == "1"
+  - name: Java result
+    yum:
+      list: '{{ package }}'
+    register: is_installed
+  - debug: msg="yes {{ package }} is installed"
+    when: is_installed.results[1].yumstate == "installed"
+  - name: Check WAS current version
+    shell: /opt/IBM/WAS/bin/versionInfo.sh | grep 'Version      '|awk '{print $2}'
+    register: version_info
+  - debug:
+      var: version_info
