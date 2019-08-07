@@ -1,5 +1,5 @@
 --- #This playbook installs IIM v1.8.2 and WASND v8.5.5.0
-- hosts: n01awl901
+- hosts: "{{ play_host }}"
   gather_facts: no
   vars:
     svc_user: svctnaix
